@@ -30,6 +30,10 @@ function p {
 		p "$2";
 		return 0;
 	}
+	[ "$1" == "path" ] && {
+		_p_path "$2";
+		return $?;
+	}
 	[ "" == "$1" ] && {
 		echo "Usage: p <project>";
 		return 1;
@@ -40,7 +44,7 @@ function p {
 		return 1;
 	}
 
-	pdir=$(grep "^$proj " "$pfile" | head -1 | awk '{print $2}');
+	pdir=$(_p_path "$proj");
 	#TODO: this color coding does not work on OSX mountain lion.
 	echo -e "Switching to project \e[0;32m$proj\e[0m at $pdir";
 	#TODO: enable subshell by flag
@@ -59,6 +63,11 @@ function p {
 		_p_title "$proj."
 		);
 	}
+}
+
+function _p_path {
+	grep "^$1 " "$pfile" | head -1 | awk '{print $2}';
+	_p_project_exists "$1"; #To get correct return code
 }
 
 function _p_title {
