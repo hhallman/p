@@ -11,6 +11,10 @@ fi
 function _p {
 	local pfile="${_P_DATA:-$HOME/.p}/projects"
 	[ -f "$pfile" ] || { mkdir -p $(dirname "$pfile") && touch "$pfile"; }
+
+	#since we only have one argument, it is simple to parse it. (works for 'create' as well.)
+	[ "$1" == "-s" ] && local _p_subshell="true" && shift;
+
 	[ "$1" == "create" ] && {
 		[ "$2" == "" ] && {
 			echo "Usage p create <project-name> [project-path]";
