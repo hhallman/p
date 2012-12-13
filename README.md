@@ -48,8 +48,13 @@ NOTES
        above.)
 	Install  the provided man page p.1 somewhere like /usr/local/man/man1.
 
-       Common:
 
+       Tab Completion:
+
+       p supports tab completion. After typing the p command, press TAB  to
+       complete project names that match (optionally) written project names.
+
+PFILES
        When opening a project, p will source global and local 'pfiles',
        ~/.pfile and ./.pfile with arguments "enter" "project-name" "project-directory".
        If the project is loaded in subshell, the pfiles will be sourced with "leave" 
@@ -58,10 +63,6 @@ NOTES
        		[ "$1"  == "enter" ] && [ -d .git ] && echo "git status" && git status;
 			[ "$1"  == "enter" ] && [ -d .svn ] && echo "svn status" && svn status;	
 
-       Tab Completion:
-
-       p supports tab completion. After typing the p command, press TAB  to
-       complete project names that match (optionally) written project names.
 
 ENVIRONMENT
        A function _p() is defined.
