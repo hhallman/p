@@ -8,8 +8,8 @@ p;
     "
 fi
 
-function p {
-	eval pfile="~/.p/projects"
+function _p {
+	local pfile="${_P_DATA:-$HOME/.p}/projects"
 	[ -f "$pfile" ] || { mkdir -p $(dirname "$pfile") && touch "$pfile"; }
 	[ "$1" == "create" ] && {
 		[ "$2" == "" ] && {
@@ -28,7 +28,7 @@ function p {
 		}
 		echo "$2 $path" >> "$pfile";
 		# Jump to the newly created project
-		p "$2";
+		_p "$2";
 		return 0;
 	}
 	[ "$1" == "path" ] && {
@@ -94,6 +94,8 @@ function p {
 	}
 }
 
+alias ${_P_CMD:-p}='_p'
+
 function _p_path {
 	grep "^$1 " "$pfile" | head -1 | awk '{print $2}';
 	_p_project_exists "$1"; #To get correct return code
@@ -109,8 +111,8 @@ function _p_project_exists {
 }
 
 function _p_projects {
-	eval pfile="~/.p/projects"
-	awk '{print $1}' < "$pfile";
+	local pfile="${_P_DATA:-$HOME/.p}/projects"
+	[ -f $pfile ] && awk '{print $1}' < "$pfile";
 }
 
 _p_complete() 
