@@ -4,6 +4,7 @@ if [[ "$BASH_SOURCE" == "$0" ]]; then
 	ABSOLUTE_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/`basename "${BASH_SOURCE[0]}"`;
     echo "This ($ABSOLUTE_PATH) is a source script, and should not be run directliy. Rather source the script by running:
 source $ABSOLUTE_PATH;
+p;
     "
 fi
 
@@ -45,21 +46,49 @@ function p {
 	}
 
 	pdir=$(_p_path "$proj");
-	#TODO: this color coding does not work on OSX mountain lion.
-	echo -e "Switching to project \e[0;32m$proj\e[0m at $pdir";
+	[ -d "$pdir" ] || { echo -e "ERROR: project $proj points to directory $pdir which does not exist.\nTo fix, edit file: $pfile"; return 1; }
 	#TODO: enable subshell by flag
 	[ "$_p_subshell" != "true" ] && {
-		cd "$pdir" && _p_title "$proj";
+		echo -e "Opening project \033[0;32m$proj\033[0m at $pdir";
+		cd "$pdir";
+		_p_title "$proj";
+		[ -f ~/.pfile.sh ] && {
+			source ~/.pfile.sh "enter" "$proj" "$pdir";
+		}
 		[ -f ".pfile.sh" ] && {
-			source ".pfile.sh" "$proj";
+			source ".pfile.sh" "enter" "$proj" "$pdir";
 		}
 	}
 	[ "$_p_subshell" == "true" ] && {
+		echo -e "Opening project \033[0;32m$proj\033[0m at $pdir in subshell";
 		(export PS1;
 		cd "$pdir" && _p_title "$proj";
-		_p_title "-$proj";
-		bash; #TODO: make bash start by eval the local .pfile.sh file
-		echo -e "exit project \e[0;32m$proj\e[0m"
+		_p_title "$proj";
+		export HISTFILE=~/.p/bash_history_${proj};
+
+		local PINITFILE="/tmp/p-init-$$";
+		cat > $PINITFILE <<.
+		[ -f ~/.bashrc ] && source ~/.bashrc;
+		[ -f ~/.pfile.sh ] && {
+			source ~/.pfile.sh "enter" "$proj" "$pdir";
+		}
+		[ -f "./.pfile.sh" ] && {
+			source "./.pfile.sh" "enter" "$proj" "$pdir";
+		}
+		function _p_current_exit {
+			[ -f ~/.pfile.sh ] && {
+				source ~/.pfile.sh "leave" "$proj" "$pdir";
+			}
+			[ -f "./.pfile.sh" ] && {
+				source "./.pfile.sh" "leave" "$proj" "$pdir";
+			}			
+		}
+		trap _p_current_exit EXIT;
+		rm $PINITFILE;
+.
+
+		bash --init-file $PINITFILE;
+		echo -e "exit project \033[0;32m$proj\033[0m"
 		_p_title "$proj."
 		);
 	}
