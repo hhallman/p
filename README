@@ -10,7 +10,7 @@ NAME
 
 
 SYNOPSIS
-       p [create] proeject-name
+       p [create] project-name
 
 
 AVAILABILITY
@@ -31,6 +31,7 @@ EXAMPLES
        p foo	 	open project foo
        p -s foo 	open project foo in subshell
        p create bar create and open project bar in current directory
+       p create      create project at current directory named as current folder
 
 
 NOTES

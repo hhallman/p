@@ -16,23 +16,22 @@ function _p {
 	[ "$1" == "-s" ] && local _p_subshell="true" && shift;
 
 	[ "$1" == "create" ] && {
-		[ "$2" == "" ] && {
-			echo "Usage p create <project-name> [project-path]";
-			return 1;
-		}
 		path="$3";
 		[ "$path" == "" ] && path="$(pwd)";
 		[ -d "$path" ] || {
 			echo "ERROR: path $path does not exist";
 			return 1;
 		}
-		_p_project_exists "$2" && {
-			echo "ERROR: project $1 exists";
+		path="$(cd $path; pwd)";
+		pname=${2-`basename $path`};
+		[ "$pname" == "" ] && pname=`basename $path`;
+		_p_project_exists "$pname" && {
+			echo "ERROR: project $pname exists";
 			return 1;
 		}
-		echo "$2 $path" >> "$pfile";
+		echo "$pname $path" >> "$pfile";
 		# Jump to the newly created project
-		_p "$2";
+		_p "$pname";
 		return 0;
 	}
 	[ "$1" == "path" ] && {
