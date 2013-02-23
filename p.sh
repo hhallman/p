@@ -38,10 +38,57 @@ function _p {
 		_p_path "$2";
 		return $?;
 	}
+	[ "$1" == "runall" ] && {
+		_p_projects | while read projectname; do
+			#Enhancement, match the projectname to a parameter to run the command in a subset of all projects.
+			(
+				#Can not run .pfile as it can be written to do more than the runall intends. 
+				#For instance, the example pfile prints vcs status. Two solutions would be to
+				#either add a runall kind of enter-verb to the pfile interface or use a flag to enable the pfile in this case.
+				#Applies to runin as well.
+				shift;
+				cd `_p_path $projectname`;
+				echo "$projectname> $@"
+				eval $@;
+			)
+		done;
+		return 0; #TODO Return fail if any failed.
+	}
+	[ "$1" == "runin" ] && {
+		projectname=$2;
+		_p_project_exists "$projectname" || {
+			echo "ERROR: project does not exist: $projectname";
+			return 1;
+		} 
+			(
+				#TODO: .pfile-solution from runall as well here.
+				shift;shift;
+				cd `_p_path $projectname`;
+				echo "$projectname> $@"
+				eval $@;
+			)
+		return $?;
+	}
+	[ "$1" == "global" ] && {
+		projectname=$2;
+		_p_project_exists "$projectname" || {
+			echo "ERROR: for p global, project does not exist: $projectname";
+			return 1;
+		} 
+		pdir=$(_p_path "$projectname") || {
+			echo "Unknown project: $projectname"
+			return 1;
+		}
+		PROJECT_HOME="$pdir"; #TODO: not so nice, this will reset existing value, a .pfile may also depend on PROJECT_HOME after sourcing.
+		source "$pdir/.pfile.sh" "global" "$projectname" "$pdir"
+		unset PROJECT_HOME;
+		return 0;
+	}
 	[ "" == "$1" ] && {
 		echo "Usage: p <project>";
 		return 1;
 	}
+
 	proj="$1";
 	grep -q "^$proj " "$pfile" || {
 		echo "No project named $1 could be found. Create it with 'p create $1 <path>'";

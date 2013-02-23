@@ -4,6 +4,7 @@
 [ "$1"  == "enter" ] && [ -d .svn ] && echo "svn status" && svn status;
 
 export PROJECT_HOME="$3"
+alias home='cd $PROJECT_HOME';
 
 function _p_snapshot_aliases {
 	local afile="${_P_DATA:-$HOME/.p}/$2-aliases"
