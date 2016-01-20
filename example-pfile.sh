@@ -15,6 +15,7 @@ function _p_compare_aliases {
 	function _p_asksave {
 		while true; do
 			echo -n "Save the new alias? [y]/n: ";
+			#TODO: skip if non-interactive
 			read q < /dev/tty;
 			case $q in
 				"y") return 0;;
@@ -26,8 +27,9 @@ function _p_compare_aliases {
 
 	local afile="${_P_DATA:-$HOME/.p}/$2-aliases"
 	diff $afile <(alias) | grep '>' | sed 's/^> //' | while read al; do
+		echo "checking alias $al"
 		aname=$(echo $al|sed 's/alias \([^=]*\)=.*/\1/')
-		grep -q "$al" "$3/.pfile.sh" || {
+		[ ! -f "$3/.pfile.sh" ] || grep -q "$al" "$3/.pfile.sh" || {
 			echo "new alias: $al";
 			existing=false
 			grep -q "alias $aname=" "$3/.pfile.sh" && existing=true &&
