@@ -1,4 +1,4 @@
-#example p-file
+#Template p-file, you may edit this file.
 #$1 = "enter/leave" $2 = 'project name' $3 = 'project directory'
 [ "$1"  == "enter" ] && [ -d .git ] && echo "git status" && git status;
 [ "$1"  == "enter" ] && [ -d .svn ] && echo "svn status" && svn status;

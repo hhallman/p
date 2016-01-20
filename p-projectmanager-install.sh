@@ -27,8 +27,13 @@ function DONE {
 STEP "Downloading files into $P_SOURCEFILE_LOCAL, $P_PROJECTFILE_USER_LOCAL";
 curl -s -o "$P_SOURCEFILE_LOCAL" "$P_SOURCEFILE_REMOTE" || 
 	FAIL "Could not download $P_SOURCEFILE_REMOTE to $P_SOURCEFILE_LOCAL";
-curl -s -o "$P_PROJECTFILE_USER_LOCAL" "$P_PROJECTFILE_USER_REMOTE" || 
-	FAIL "Could not download $P_PROJECTFILE_USER_REMOTE to $P_PROJECTFILE_USER_LOCAL";
+[ -f "$P_PROJECTFILE_USER_LOCAL" ] && {
+	NOTE "Local projectfile already exists, ($P_PROJECTFILE_USER_LOCAL) will not overwrite. Consider updating from: $P_PROJECTFILE_USER_REMOTE"
+}
+[ -f "$P_PROJECTFILE_USER_LOCAL" ] || {
+	curl -s -o "$P_PROJECTFILE_USER_LOCAL" "$P_PROJECTFILE_USER_REMOTE" || 
+		FAIL "Could not download $P_PROJECTFILE_USER_REMOTE to $P_PROJECTFILE_USER_LOCAL";
+}
 
 function install_to_script {
 	USER_BASHRC="$1";
