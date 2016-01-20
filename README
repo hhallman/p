@@ -40,11 +40,12 @@ EXPERIMENTAL FEATURES
        p runall <cmd>              runs cmd in all projects folder's. The pfile is not used!
 
 NOTES
-       Installation:
+       Automatic installation:
+              bash <(curl -s https://raw.githubusercontent.com/hhallman/p/master/p-projectmanager-install.sh)
 
+       Manual installation:
        Put something like this in your $HOME/.bashrc or $HOME/.zshrc:
-
-	. /path/to/p.sh
+	      . /path/to/p.sh
 
        create some projects and enjoy!
 
@@ -62,7 +63,7 @@ NOTES
 
 PFILES
        When opening a project, p will source global and local 'pfiles',
-       ~/.pfile and ./.pfile with arguments "enter" "project-name" "project-directory".
+       ~/.pfile.sh and ./.pfile.sh with arguments "enter" "project-name" "project-directory".
        If the project is loaded in subshell, the pfiles will be sourced with "leave" 
        instead of "enter" when the shell exits.
        Example of global pfile:
