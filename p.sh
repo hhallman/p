@@ -22,7 +22,7 @@ function _p {
 			echo "ERROR: path $path does not exist";
 			return 1;
 		}
-		path="$(cd $path; pwd)";
+		path="$(cd $path > /dev/null; pwd)";
 		pname=${2-`basename $path`};
 		[ "$pname" == "" ] && pname=`basename $path`;
 		_p_project_exists "$pname" && {
@@ -47,7 +47,7 @@ function _p {
 				#either add a runall kind of enter-verb to the pfile interface or use a flag to enable the pfile in this case.
 				#Applies to runin as well.
 				shift;
-				cd `_p_path $projectname`;
+				cd `_p_path $projectname` > /dev/null;
 				echo "$projectname> $@"
 				eval $@;
 			)
@@ -63,7 +63,7 @@ function _p {
 			(
 				#TODO: .pfile-solution from runall as well here.
 				shift;shift;
-				cd `_p_path $projectname`;
+				cd `_p_path $projectname` > /dev/null;
 				echo "$projectname> $@"
 				eval $@;
 			)
@@ -100,7 +100,7 @@ function _p {
 	#TODO: enable subshell by flag
 	[ "$_p_subshell" != "true" ] && {
 		echo -e "Opening project \033[0;32m$proj\033[0m at $pdir";
-		cd "$pdir";
+		cd "$pdir" > /dev/null;
 		_p_title "$proj";
 		[ -f ~/.pfile.sh ] && {
 			source ~/.pfile.sh "enter" "$proj" "$pdir";
@@ -112,7 +112,7 @@ function _p {
 	[ "$_p_subshell" == "true" ] && {
 		echo -e "Opening project \033[0;32m$proj\033[0m at $pdir in subshell";
 		(export PS1;
-		cd "$pdir" && _p_title "$proj";
+		cd "$pdir" > /dev/null && _p_title "$proj";
 		_p_title "$proj";
 		export HISTFILE=~/.p/bash_history_${proj};
 
