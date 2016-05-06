@@ -69,6 +69,10 @@ function _p {
 			)
 		return $?;
 	}
+	[ "$1" == "menu" ] && {
+		echo "p < $(_p_projects | tr '\n' '|'|sed 's/|/ | /g'|sed 's/| $//')>";
+		return 0;
+	}
 	[ "$1" == "global" ] && {
 		projectname=$2;
 		_p_project_exists "$projectname" || {

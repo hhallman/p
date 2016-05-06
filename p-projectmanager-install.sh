@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 
 eval P_SOURCEFILE_LOCAL="$HOME/.p.sh";
 eval P_SOURCEFILE_REMOTE="https://raw.githubusercontent.com/hhallman/p/master/p.sh";

@@ -11,7 +11,7 @@ NAME
 
 SYNOPSIS
        p [create] project-name
-
+       p menu
 
 AVAILABILITY
        bash
@@ -60,6 +60,12 @@ NOTES
 
        p supports tab completion. After typing the p command, press TAB  to
        complete project names that match (optionally) written project names.
+
+       Project menu:
+       The project menu might be handy. To get a project-greeting in new shells, type
+       $ p menu. 
+       It may be handy to get the project-menu in new shells:
+       $ echo 'p menu' >> ~/.bash_profile
 
 PFILES
        When opening a project, p will source global and local 'pfiles',
